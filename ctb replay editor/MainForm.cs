@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using osu_database_reader.BinaryFiles;
@@ -48,11 +49,17 @@ namespace ctb_replay_editor {
         private void loadReplayButton_Click(object sender, EventArgs e) {
             OpenFileDialog ofd = new OpenFileDialog {Filter = "osu! replays (*.osr)|*.osr|All Files (*.*)|*.*"};
             if (ofd.ShowDialog() != DialogResult.OK) return;
+
             Replay = new Replay(ofd.FileName, true);
             Replay.ReplayFrames.Add(new ReplayFrame {Time = int.MaxValue - 1});
 
             BeatmapEntry = Reader.Beatmaps.Find(a => a.BeatmapChecksum == Replay.MapHash);
-            BeatmapFile = BeatmapFile.Read($@"{osuPath}\Songs\{BeatmapEntry.FolderName}\{BeatmapEntry.BeatmapFileName}");
+
+            string beatmapFolder = Path.Combine(osuPath, "Songs", BeatmapEntry.FolderName);
+            string beatmapFilePath = Path.Combine(beatmapFolder, BeatmapEntry.BeatmapFileName);
+            string audioFilePath = Path.Combine(beatmapFolder, BeatmapEntry.AudioFileName);
+
+            BeatmapFile = BeatmapFile.Read(beatmapFilePath);
 
             PlayField.ApproachRateInMS = ARtoMS(BeatmapEntry.ApproachRate);
             PlayField.CircleSize = BeatmapEntry.CircleSize;
@@ -61,7 +68,7 @@ namespace ctb_replay_editor {
             PlayField.Width = PlayField.GetCatcherWidth();
             PlayField.OsuPixelCircleSize = 109 - 9 * PlayField.CircleSize;
 
-            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile($@"{osuPath}\Songs\{BeatmapEntry.FolderName}\{BeatmapEntry.AudioFileName}", 0, 0, BASSFlag.BASS_DEFAULT);
+            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_DEFAULT);
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
         }
 
