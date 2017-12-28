@@ -7,8 +7,6 @@ namespace ctb_replay_editor {
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool SetProcessDPIAware();
 
-        public const string HardcodedOsuPath = @"E:\osu!\";
-
         public static int CurrentAudioStream;
         public static MainForm Form;
 

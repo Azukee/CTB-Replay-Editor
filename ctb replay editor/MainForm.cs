@@ -22,6 +22,8 @@ namespace ctb_replay_editor {
         public Replay Replay;
         public Thread StuffThread;
 
+        private readonly string osuPath = Utils.GetOsuPath();
+
         public MainForm() {
             InitializeComponent();
             BassNetRegister.Register();
@@ -50,7 +52,7 @@ namespace ctb_replay_editor {
             Replay.ReplayFrames.Add(new ReplayFrame {Time = int.MaxValue - 1});
 
             BeatmapEntry = Reader.Beatmaps.Find(a => a.BeatmapChecksum == Replay.MapHash);
-            BeatmapFile = BeatmapFile.Read(Program.HardcodedOsuPath + @"Songs\" + BeatmapEntry.FolderName + @"\" + BeatmapEntry.BeatmapFileName);
+            BeatmapFile = BeatmapFile.Read($@"{osuPath}\Songs\{BeatmapEntry.FolderName}\{BeatmapEntry.BeatmapFileName}");
 
             PlayField.ApproachRateInMS = ARtoMS(BeatmapEntry.ApproachRate);
             PlayField.CircleSize = BeatmapEntry.CircleSize;
@@ -58,7 +60,8 @@ namespace ctb_replay_editor {
             Objects = BeatmapFile.HitObjects;
             PlayField.Width = PlayField.GetCatcherWidth();
             PlayField.OsuPixelCircleSize = 109 - 9 * PlayField.CircleSize;
-            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(Program.HardcodedOsuPath + @"Songs\" + BeatmapEntry.FolderName + @"\" + BeatmapEntry.AudioFileName, 0, 0, BASSFlag.BASS_DEFAULT);
+
+            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile($@"{osuPath}\Songs\{BeatmapEntry.FolderName}\{BeatmapEntry.AudioFileName}", 0, 0, BASSFlag.BASS_DEFAULT);
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
         }
 
@@ -78,7 +81,7 @@ namespace ctb_replay_editor {
         private void MainForm_Load(object sender, EventArgs e) {
             StuffThread = new Thread(LabelKeeper) {IsBackground = true};
             StuffThread.Start();
-            Reader = OsuDb.Read(Program.HardcodedOsuPath + @"osu!.db");
+            Reader = OsuDb.Read(osuPath + @"\osu!.db");
         }
     }
 }
