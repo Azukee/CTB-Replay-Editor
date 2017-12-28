@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using osu_database_reader.BinaryFiles;
 using osu_database_reader.Components.Beatmaps;
@@ -9,6 +8,7 @@ using osu_database_reader.Components.HitObjects;
 using osu_database_reader.TextFiles;
 using ReplayAPI;
 using Un4seen.Bass;
+using Timer = System.Windows.Forms.Timer;
 
 namespace ctb_replay_editor {
     public partial class MainForm : Form {
@@ -21,25 +21,21 @@ namespace ctb_replay_editor {
         public PlayField PlayField = null;
         public OsuDb Reader;
         public Replay Replay;
-        public Thread StuffThread;
 
         private readonly string osuPath = Utils.GetOsuPath();
+        private readonly Timer timerGui;
 
         public MainForm() {
             InitializeComponent();
             BassNetRegister.Register();
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
 
-            //let's not rape my ears every time, alright?
-            //Bass.BASS_SetVolume(0.45f);
-        }
-
-        public void LabelKeeper() {
-            while (true) {
-                charPosLabel.Invoke(new MethodInvoker(() => charPosLabel.Text = $"Char Pos: {PlayField.CharPos}"));
-                timeLabel.Invoke(new MethodInvoker(() => timeLabel.Text = $"Time: {OsuTime}"));
-                Thread.Sleep(16);
-            }
+            timerGui = new Timer {Interval = 100};
+            timerGui.Tick += (o, e) => {
+                charPosLabel.Text = $"Char Pos: {PlayField.CharPos:F2}";
+                timeLabel.Text = $"Time: {OsuTime/1000f:F3}s";
+            };
+            timerGui.Start();
         }
 
         public IntPtr GetControlHandle(Control control) {
@@ -86,14 +82,11 @@ namespace ctb_replay_editor {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            StuffThread = new Thread(LabelKeeper) {IsBackground = true};
-            StuffThread.Start();
             Reader = OsuDb.Read(osuPath + @"\osu!.db");
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            StuffThread?.Abort();
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            timerGui?.Stop();
             Bass.BASS_Stop();
             PlayField.Exit();
         }
