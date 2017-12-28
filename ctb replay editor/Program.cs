@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ctb_replay_editor {
     static class Program {
-        public static int CurrentAudioStream;
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool SetProcessDPIAware();
-        public static MainForm form;
+
+        public const string HardcodedOsuPath = @"E:\osu!\";
+
+        public static int CurrentAudioStream;
+        public static MainForm Form;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,10 +20,15 @@ namespace ctb_replay_editor {
             SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            form = new MainForm();
-            form.Show();
-            form.PlayField = new PlayField(form.GetControlHandle(form.playfieldPictureBox), form);
-            form.PlayField.Run();
+
+            //init form
+            Form = new MainForm();
+            Form.Show();
+
+            //init playfield
+            //this is now the blocking call
+            Form.PlayField = new PlayField(Form.GetControlHandle(Form.playfieldPictureBox));
+            Form.PlayField.Run();
         }
     }
 }
