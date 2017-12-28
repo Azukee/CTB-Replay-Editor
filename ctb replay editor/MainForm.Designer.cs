@@ -98,6 +98,7 @@
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.Text = "whatever this is";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.playfieldPictureBox)).EndInit();
             this.constantsGroupBox.ResumeLayout(false);

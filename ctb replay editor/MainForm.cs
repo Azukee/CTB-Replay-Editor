@@ -38,7 +38,7 @@ namespace ctb_replay_editor {
             while (true) {
                 charPosLabel.Invoke(new MethodInvoker(() => charPosLabel.Text = $"Char Pos: {PlayField.CharPos}"));
                 timeLabel.Invoke(new MethodInvoker(() => timeLabel.Text = $"Time: {OsuTime}"));
-                Thread.Sleep(5);
+                Thread.Sleep(16);
             }
         }
 
@@ -89,6 +89,13 @@ namespace ctb_replay_editor {
             StuffThread = new Thread(LabelKeeper) {IsBackground = true};
             StuffThread.Start();
             Reader = OsuDb.Read(osuPath + @"\osu!.db");
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            StuffThread?.Abort();
+            Bass.BASS_Stop();
+            PlayField.Exit();
         }
     }
 }
