@@ -25,7 +25,7 @@ namespace ctb_replay_editor {
 
             //init playfield
             //this is now the blocking call
-            Form.PlayField = new PlayField(Form.GetControlHandle(Form.playfieldPictureBox));
+            Form.PlayField = new PlayField(Form.playfieldPictureBox.Handle);
             Form.PlayField.Run();
         }
     }

@@ -12,15 +12,13 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace ctb_replay_editor {
     public partial class MainForm : Form {
-        public BeatmapEntry BeatmapEntry;
-        public BeatmapFile BeatmapFile;
         public int CurrentFrame = 0;
         public int CurrentObject = 0;
         public List<HitObject> Objects;
         public int OsuTime = 0;
-        public PlayField PlayField = null;
-        public OsuDb Reader;
         public Replay Replay;
+
+        public PlayField PlayField = null;
 
         private readonly string osuPath = Utils.GetOsuPath();
         private readonly Timer timerGui;
@@ -38,10 +36,6 @@ namespace ctb_replay_editor {
             timerGui.Start();
         }
 
-        public IntPtr GetControlHandle(Control control) {
-            return control.Handle;
-        }
-
         private void loadReplayButton_Click(object sender, EventArgs e) {
             OpenFileDialog ofd = new OpenFileDialog {Filter = "osu! replays (*.osr)|*.osr|All Files (*.*)|*.*"};
             if (ofd.ShowDialog() != DialogResult.OK) return;
@@ -49,18 +43,19 @@ namespace ctb_replay_editor {
             Replay = new Replay(ofd.FileName, true);
             Replay.ReplayFrames.Add(new ReplayFrame {Time = int.MaxValue - 1});
 
-            BeatmapEntry = Reader.Beatmaps.Find(a => a.BeatmapChecksum == Replay.MapHash);
+            //re-reading osu!.db every time to save some memory
+            //it only takes a few ms anyway
+            BeatmapEntry beatmapEntry = OsuDb.Read(osuPath + @"\osu!.db").Beatmaps.Find(a => a.BeatmapChecksum == Replay.MapHash);
 
-            string beatmapFolder = Path.Combine(osuPath, "Songs", BeatmapEntry.FolderName);
-            string beatmapFilePath = Path.Combine(beatmapFolder, BeatmapEntry.BeatmapFileName);
-            string audioFilePath = Path.Combine(beatmapFolder, BeatmapEntry.AudioFileName);
+            string beatmapFolder = Path.Combine(osuPath, "Songs", beatmapEntry.FolderName);
+            string beatmapFilePath = Path.Combine(beatmapFolder, beatmapEntry.BeatmapFileName);
+            string audioFilePath = Path.Combine(beatmapFolder, beatmapEntry.AudioFileName);
 
-            BeatmapFile = BeatmapFile.Read(beatmapFilePath);
+            PlayField.ApproachRateInMS = ARtoMS(beatmapEntry.ApproachRate);
+            PlayField.CircleSize = beatmapEntry.CircleSize;
 
-            PlayField.ApproachRateInMS = ARtoMS(BeatmapEntry.ApproachRate);
-            PlayField.CircleSize = BeatmapEntry.CircleSize;
-
-            Objects = BeatmapFile.HitObjects;
+            BeatmapFile beatmapFile = BeatmapFile.Read(beatmapFilePath);
+            Objects = beatmapFile.HitObjects;
             PlayField.Width = PlayField.GetCatcherWidth();
             PlayField.OsuPixelCircleSize = 109 - 9 * PlayField.CircleSize;
 
@@ -82,7 +77,6 @@ namespace ctb_replay_editor {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            Reader = OsuDb.Read(osuPath + @"\osu!.db");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {

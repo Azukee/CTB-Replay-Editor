@@ -14,13 +14,10 @@ namespace ctb_replay_editor {
     public class PlayField : Game {
         public float ApproachRateInMS = 300f;
 
-        public ReplayFrame CurrFrame;
-
         public float CharPos = 256f;
         public float CircleSize = 0.5f;
 
         public bool GoingLeft;
-        private readonly GraphicsDeviceManager graphics;
         public bool IsDash;
 
         public float OsuPixelCircleSize = 0.0f;
@@ -28,28 +25,16 @@ namespace ctb_replay_editor {
         public float Width = 0.0f;
 
         public PlayField(IntPtr Object) {
-            DrawingSurface = Object;
-            Size = new Vector2(512, 512);
-            graphics = new GraphicsDeviceManager(this)
-            {
+            //change target to our control
+            var graphics = new GraphicsDeviceManager(this) {
                 PreferredBackBufferWidth = 512,
                 PreferredBackBufferHeight = 384
             };
-            Size = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            graphics.PreparingDeviceSettings += (sender, e) => e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle = DrawingSurface;
-            XNAForm = Control.FromHandle(Window.Handle);
+            graphics.PreparingDeviceSettings += (sender, e) => e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle = Object;
             Mouse.WindowHandle = Object;
-            XNAForm.VisibleChanged += XNAForm_VisibleChanged;
-        }
 
-        public Vector2 Size { get; set; }
-        public Form ParentForm { get; set; }
-        public Control XNAForm { get; set; }
-        public IntPtr DrawingSurface { get; set; }
-
-        private void XNAForm_VisibleChanged(object sender, EventArgs e) {
-            if (XNAForm.Visible)
-                XNAForm.Visible = false;
+            //hide the XNAForm
+            Control.FromHandle(Window.Handle).VisibleChanged += (sender, args) => ((Control) sender).Visible = false;
         }
 
         public static double ApplyModsToDifficulty(double difficulty, double hardRockFactor, Mods mods) {
@@ -100,9 +85,9 @@ namespace ctb_replay_editor {
         protected override void Update(GameTime gameTime) {
             if (Program.Form.Replay != null) {
                 Program.Form.OsuTime = (int)Math.Round(Bass.BASS_ChannelBytes2Seconds(Program.CurrentAudioStream, Bass.BASS_ChannelGetPosition(Program.CurrentAudioStream))*1000, 0, MidpointRounding.AwayFromZero);
-                CurrFrame = Program.Form.Replay.ReplayFrames.First(a => a.Time >= Program.Form.OsuTime);
-                CharPos = CurrFrame.X;
-                IsDash = CurrFrame.Keys.HasFlag(Keys.M1);
+                var currFrame = Program.Form.Replay.ReplayFrames.First(a => a.Time >= Program.Form.OsuTime);
+                CharPos = currFrame.X;
+                IsDash = currFrame.Keys.HasFlag(Keys.M1);
                 //if (CurrFrame.frameIndex != 0)
                 //    GoingLeft = Program.form.Replay.ReplayFrames[CurrFrame.frameIndex - 1].X < CurrFrame.X;
             }
