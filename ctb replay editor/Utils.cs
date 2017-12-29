@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Win32;
+using osu_database_reader.Components.HitObjects;
 using ReplayAPI;
 
 namespace ctb_replay_editor {
@@ -31,6 +33,31 @@ namespace ctb_replay_editor {
             return difficulty;
         }
 
+        public static void InitializeHyperDash(List<HitObject> HitObjects, float catcherWidth) {
+            int lastDirection = 0;
+            float catcherWidthHalf = catcherWidth / 2;
+            float lastExcess = catcherWidthHalf;
+
+            for (int i = 0; i < HitObjects.Count - 1; i++) {
+                HitObject currentObject = HitObjects[i];
+                HitObject nextObject = HitObjects[i + 1];
+
+                int thisDirection = nextObject.X > currentObject.X ? 1 : -1;
+                //Azuki note: nextObject.Time is actually StartTime and currentObject.time is actually EndTime (for sliders later)
+                float timeToNext = nextObject.Time - currentObject.Time - (float)((double)1000 / 60 / 4);
+                float distanceToNext = Math.Abs(nextObject.X - currentObject.X) - (lastDirection == thisDirection ? lastExcess : catcherWidthHalf);
+
+                if (timeToNext < distanceToNext) {
+                    //Azuki note: Manipulate the Y position of the HitObject because it's useless for CtB anyways
+                    //so I'm using it to indiciate if a HitObject is a HyperDash
+                    HitObjects[i].Y = Int16.MaxValue;
+                    lastExcess = catcherWidthHalf;
+                }
+
+                lastDirection = thisDirection;
+            }
+        }
+
         public static float GetCatcherWidth(float cs, Mods m = Mods.None) {
             //0,4
             float spriteDisplaySize = (float) (512 / 8f * (1f - 0.7f * AdjustCSToDifficulty(cs, m)));
@@ -45,6 +72,7 @@ namespace ctb_replay_editor {
         public static float GetHitobjectSize(float cs) => 109 - 9 * cs;
 
         //HoLLy note: no clue what this should be
+        //Azuki note: no clue but osu! had it
         private static double AdjustCSToDifficulty(float cs, Mods m) => (ApplyModsToDifficulty(cs, 1.3, m) - 5) / 5;
     }
 }

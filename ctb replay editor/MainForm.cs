@@ -58,6 +58,8 @@ namespace ctb_replay_editor {
             PlayField.Width = Utils.GetCatcherWidth(beatmapEntry.CircleSize);
             PlayField.OsuPixelCircleSize = Utils.GetHitobjectSize(beatmapEntry.CircleSize);
 
+            Utils.InitializeHyperDash(Objects, PlayField.Width);
+
             Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_DEFAULT);
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
         }

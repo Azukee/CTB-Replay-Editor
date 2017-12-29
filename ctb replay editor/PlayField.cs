@@ -62,8 +62,8 @@ namespace ctb_replay_editor {
                 var currFrame = Program.Form.Replay.ReplayFrames.First(a => a.Time >= Program.Form.OsuTime);
                 CharPos = currFrame.X;
                 IsDash = currFrame.Keys.HasFlag(Keys.M1);
-                //if (CurrFrame.frameIndex != 0)
-                //    GoingLeft = Program.form.Replay.ReplayFrames[CurrFrame.frameIndex - 1].X < CurrFrame.X;
+                if (Program.Form.Replay.ReplayFrames.IndexOf(currFrame) != 0)
+                    GoingLeft = Program.Form.Replay.ReplayFrames[Program.Form.Replay.ReplayFrames.IndexOf(currFrame) - 1].X < currFrame.X;
             }
             base.Update(gameTime);
         }
@@ -77,7 +77,7 @@ namespace ctb_replay_editor {
                 foreach (HitObject obj in Program.Form.Objects.Where(a => Program.Form.OsuTime > a.Time - ApproachRateInMS && Program.Form.OsuTime < a.Time)) {
                     var posY = 384f - catcherHeight - (obj.Time - Program.Form.OsuTime) / ApproachRateInMS * 384f;
                     int calculatedCS = (int) Math.Round(OsuPixelCircleSize, 0, MidpointRounding.AwayFromZero);
-                    spriteBatch.Draw(TextureFromFile("images\\fruit-apple.png", calculatedCS, calculatedCS), new Vector2(obj.X - calculatedCS/2, posY), Color.White);
+                    spriteBatch.Draw(TextureFromFile("images\\fruit-apple.png", calculatedCS, calculatedCS), new Vector2(obj.X - calculatedCS/2, posY), obj.Y != Int16.MaxValue ? Color.White : Color.Red);
                 }
                 spriteBatch.Draw(TextureFromFile("images\\catcher.png", catcherWidth, catcherHeight),
                     new Vector2(CharPos - catcherWidth / 2f, 384f - catcherHeight), null,
