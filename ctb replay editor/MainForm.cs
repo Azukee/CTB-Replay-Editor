@@ -51,29 +51,15 @@ namespace ctb_replay_editor {
             string beatmapFilePath = Path.Combine(beatmapFolder, beatmapEntry.BeatmapFileName);
             string audioFilePath = Path.Combine(beatmapFolder, beatmapEntry.AudioFileName);
 
-            PlayField.ApproachRateInMS = ARtoMS(beatmapEntry.ApproachRate);
-            PlayField.CircleSize = beatmapEntry.CircleSize;
+            PlayField.ApproachRateInMS = Utils.ARtoMS(beatmapEntry.ApproachRate);
 
             BeatmapFile beatmapFile = BeatmapFile.Read(beatmapFilePath);
             Objects = beatmapFile.HitObjects;
-            PlayField.Width = PlayField.GetCatcherWidth();
-            PlayField.OsuPixelCircleSize = 109 - 9 * PlayField.CircleSize;
+            PlayField.Width = Utils.GetCatcherWidth(beatmapEntry.CircleSize);
+            PlayField.OsuPixelCircleSize = Utils.GetHitobjectSize(beatmapEntry.CircleSize);
 
             Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_DEFAULT);
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
-        }
-
-        public float ARtoMS(float ar) {
-            const int low = 450;
-            const int mid = 1200;
-            const int hi = 1800;
-
-            //time on screen
-            if (ar > 5)
-                return mid + (low - mid) * (ar - 5) / 5;
-            if (ar < 5)
-                return mid - (mid - hi) * (5 - ar) / 5;
-            return mid;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
