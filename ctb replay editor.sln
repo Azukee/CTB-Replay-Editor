@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ctb replay editor", "ctb replay editor\ctb replay editor.csproj", "{1225F406-DBB3-4271-ADE0-67DDB660FA3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu-database-reader", "osu-database-reader\osu-database-reader\osu-database-reader.csproj", "{C3078606-8055-4122-845D-7F9A0154883D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "osu.Shared", "osu-database-reader\osu.Shared\osu.Shared\osu.Shared.csproj", "{503C9F9D-6F22-4712-9774-C9A492491D5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu!ReplayAPI", "osu-Replay-API\osu!ReplayAPI\osu!ReplayAPI.csproj", "{D27C2719-0033-4F58-ACE1-E709DB89B2F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Debug|x86.ActiveCfg = Debug|x86
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Debug|x86.Build.0 = Debug|x86
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Release|x86.ActiveCfg = Release|x86
+		{1225F406-DBB3-4271-ADE0-67DDB660FA3A}.Release|x86.Build.0 = Release|x86
+		{C3078606-8055-4122-845D-7F9A0154883D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3078606-8055-4122-845D-7F9A0154883D}.Release|x86.Build.0 = Release|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Debug|x86.Build.0 = Debug|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Release|x86.ActiveCfg = Release|Any CPU
+		{503C9F9D-6F22-4712-9774-C9A492491D5D}.Release|x86.Build.0 = Release|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{D27C2719-0033-4F58-ACE1-E709DB89B2F3}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66F06611-A68C-420E-A2F0-AD2C497249A4}
+	EndGlobalSection
+EndGlobal
