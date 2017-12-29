@@ -17,6 +17,7 @@ namespace ctb_replay_editor {
         public List<HitObject> Objects;
         public int OsuTime = 0;
         public Replay Replay;
+        public bool IsPaused;
 
         public PlayField PlayField = null;
 
@@ -57,6 +58,7 @@ namespace ctb_replay_editor {
             Objects = beatmapFile.HitObjects;
             PlayField.Width = Utils.GetCatcherWidth(beatmapEntry.CircleSize);
             PlayField.OsuPixelCircleSize = Utils.GetHitobjectSize(beatmapEntry.CircleSize);
+            PlayField.HitArray = Utils.InitializeHits(Replay.ReplayFrames, Objects, PlayField.Width);
 
             Utils.InitializeHyperDash(Objects, PlayField.Width);
 
@@ -71,6 +73,16 @@ namespace ctb_replay_editor {
             timerGui?.Stop();
             Bass.BASS_Stop();
             PlayField.Exit();
+        }
+
+        private void togglePauseButton_Click(object sender, EventArgs e) {
+            if (!IsPaused) {
+                Bass.BASS_ChannelPause(Program.CurrentAudioStream);
+                IsPaused = true;
+            } else {
+                Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
+                IsPaused = false;
+            }
         }
     }
 }

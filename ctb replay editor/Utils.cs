@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Win32;
+using osu.Shared;
 using osu_database_reader.Components.HitObjects;
 using ReplayAPI;
+using Mods = ReplayAPI.Mods;
 
 namespace ctb_replay_editor {
     internal static class Utils {
@@ -56,6 +59,24 @@ namespace ctb_replay_editor {
 
                 lastDirection = thisDirection;
             }
+        }
+
+        public static bool[] InitializeHits(List<ReplayFrame> ReplayFrames, List<HitObject> HitObjects, float catcherWidth) {
+            bool[] isHitArray = new bool[HitObjects.Count];
+            float catcherWidthHalf = catcherWidth / 2;
+            float catchMargin = catcherWidth * 0.1f;
+
+            for (var i = 0; i < HitObjects.Count; i++) {
+                HitObject currObject = HitObjects[i];
+                if (!currObject.Type.HasFlag(HitObjectType.Spinner)) {
+                    ReplayFrame nearestFrame = ReplayFrames.First(a => a.Time >= currObject.Time);
+
+                    isHitArray[i] = nearestFrame.X - catcherWidthHalf + catchMargin < currObject.X 
+                        && nearestFrame.X + catcherWidthHalf - catchMargin > currObject.X;
+                } else
+                    isHitArray[i] = true;
+            }
+            return isHitArray;
         }
 
         public static float GetCatcherWidth(float cs, Mods m = Mods.None) {

@@ -33,6 +33,7 @@
             this.timeLabel = new System.Windows.Forms.Label();
             this.charPosLabel = new System.Windows.Forms.Label();
             this.loadReplayButton = new System.Windows.Forms.Button();
+            this.togglePauseButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.playfieldPictureBox)).BeginInit();
             this.constantsGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -84,11 +85,22 @@
             this.loadReplayButton.UseVisualStyleBackColor = true;
             this.loadReplayButton.Click += new System.EventHandler(this.loadReplayButton_Click);
             // 
+            // togglePauseButton
+            // 
+            this.togglePauseButton.Location = new System.Drawing.Point(646, 83);
+            this.togglePauseButton.Name = "togglePauseButton";
+            this.togglePauseButton.Size = new System.Drawing.Size(84, 23);
+            this.togglePauseButton.TabIndex = 3;
+            this.togglePauseButton.Text = "Toggle Pause";
+            this.togglePauseButton.UseVisualStyleBackColor = true;
+            this.togglePauseButton.Click += new System.EventHandler(this.togglePauseButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(745, 412);
+            this.Controls.Add(this.togglePauseButton);
             this.Controls.Add(this.loadReplayButton);
             this.Controls.Add(this.constantsGroupBox);
             this.Controls.Add(this.playfieldPictureBox);
@@ -114,6 +126,7 @@
         private System.Windows.Forms.Label timeLabel;
         private System.Windows.Forms.Label charPosLabel;
         private System.Windows.Forms.Button loadReplayButton;
+        private System.Windows.Forms.Button togglePauseButton;
     }
 }
 

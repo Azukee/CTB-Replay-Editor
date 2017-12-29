@@ -22,6 +22,8 @@ namespace ctb_replay_editor {
         private SpriteBatch spriteBatch;
         public float Width = 0.0f;
 
+        public bool[] HitArray;
+
         public PlayField(IntPtr Object) {
             //change target to our control
             var graphics = new GraphicsDeviceManager(this) {
@@ -75,9 +77,10 @@ namespace ctb_replay_editor {
                 int catcherWidth = (int) Math.Round(Width, 0, MidpointRounding.AwayFromZero);
                 int catcherHeight = (int) Math.Round(Width + 7, 0, MidpointRounding.AwayFromZero);
                 foreach (HitObject obj in Program.Form.Objects.Where(a => Program.Form.OsuTime > a.Time - ApproachRateInMS && Program.Form.OsuTime < a.Time)) {
+                    bool isHit = HitArray[Program.Form.Objects.IndexOf(obj)];
                     var posY = 384f - catcherHeight - (obj.Time - Program.Form.OsuTime) / ApproachRateInMS * 384f;
                     int calculatedCS = (int) Math.Round(OsuPixelCircleSize, 0, MidpointRounding.AwayFromZero);
-                    spriteBatch.Draw(TextureFromFile("images\\fruit-apple.png", calculatedCS, calculatedCS), new Vector2(obj.X - calculatedCS/2, posY), obj.Y != Int16.MaxValue ? Color.White : Color.Red);
+                    spriteBatch.Draw(TextureFromFile(isHit ? "images\\fruit-apple.png" : "images\\fruit-apple-miss.png", calculatedCS, calculatedCS), new Vector2(obj.X - calculatedCS/2, posY), obj.Y != Int16.MaxValue ? Color.White : Color.Red);
                 }
                 spriteBatch.Draw(TextureFromFile("images\\catcher.png", catcherWidth, catcherHeight),
                     new Vector2(CharPos - catcherWidth / 2f, 384f - catcherHeight), null,
