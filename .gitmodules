@@ -3,4 +3,4 @@
 	url = https://github.com/HoLLy-HaCKeR/osu-database-reader
 [submodule "osu-Replay-API"]
 	path = osu-Replay-API
-	url = https://github.com/smoogipoo/osu-Replay-API.git
+	url = https://github.com/smoogipoo/osu-Replay-API
