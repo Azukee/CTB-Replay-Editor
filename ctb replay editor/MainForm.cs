@@ -8,6 +8,7 @@ using osu_database_reader.Components.HitObjects;
 using osu_database_reader.TextFiles;
 using ReplayAPI;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Fx;
 using Timer = System.Windows.Forms.Timer;
 
 namespace ctb_replay_editor {
@@ -56,13 +57,21 @@ namespace ctb_replay_editor {
 
             BeatmapFile beatmapFile = BeatmapFile.Read(beatmapFilePath);
             Objects = beatmapFile.HitObjects;
-            PlayField.Width = Utils.GetCatcherWidth(beatmapEntry.CircleSize);
+            PlayField.Width = Utils.GetCatcherWidth(beatmapEntry.CircleSize, Replay.Mods);
             PlayField.OsuPixelCircleSize = Utils.GetHitobjectSize(beatmapEntry.CircleSize);
             PlayField.HitArray = Utils.InitializeHits(Replay.ReplayFrames, Objects, PlayField.Width);
 
             Utils.InitializeHyperDash(Objects, PlayField.Width);
 
-            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_DEFAULT);
+            Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
+            Program.CurrentAudioStream = BassFx.BASS_FX_TempoCreate(Program.CurrentAudioStream, BASSFlag.BASS_FX_TEMPO_ALGO_LINEAR);
+
+            if (Replay.Mods.HasFlag(Mods.DoubleTime))
+                if (!Bass.BASS_ChannelSetAttribute(Program.CurrentAudioStream, BASSAttribute.BASS_ATTRIB_TEMPO, 25)) { 
+                    BASSError lBassError = Bass.BASS_ErrorGetCode();
+                    throw new Exception(lBassError.ToString());
+                }
+
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
         }
 
