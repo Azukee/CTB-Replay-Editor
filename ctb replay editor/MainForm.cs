@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using osu_database_reader.BinaryFiles;
 using osu_database_reader.Components.Beatmaps;
@@ -66,17 +67,27 @@ namespace ctb_replay_editor {
             Program.CurrentAudioStream = Bass.BASS_StreamCreateFile(audioFilePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
             Program.CurrentAudioStream = BassFx.BASS_FX_TempoCreate(Program.CurrentAudioStream, BASSFlag.BASS_FX_TEMPO_ALGO_LINEAR);
 
-            if (Replay.Mods.HasFlag(Mods.DoubleTime))
+            if (Replay.Mods.HasFlag(Mods.DoubleTime) || Replay.Mods.HasFlag(Mods.NightCore))
                 if (!Bass.BASS_ChannelSetAttribute(Program.CurrentAudioStream, BASSAttribute.BASS_ATTRIB_TEMPO, 25)) { 
                     BASSError lBassError = Bass.BASS_ErrorGetCode();
                     throw new Exception(lBassError.ToString());
                 }
 
+            if (Replay.Mods.HasFlag(Mods.HalfTime))
+                if (!Bass.BASS_ChannelSetAttribute(Program.CurrentAudioStream, BASSAttribute.BASS_ATTRIB_TEMPO, -25)) {
+                    BASSError lBassError = Bass.BASS_ErrorGetCode();
+                    throw new Exception(lBassError.ToString());
+                }
+
+            timeTrackBar.Maximum = Replay.ReplayFrames.Count;
             Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
         }
 
-        private void MainForm_Load(object sender, EventArgs e) {
+        public void ChangeTrackBarPosition(int replayFrameNumber) {
+            timeTrackBar.Invoke(new MethodInvoker(() => timeTrackBar.Value = replayFrameNumber));
         }
+
+        private void MainForm_Load(object sender, EventArgs e) { }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             timerGui?.Stop();
@@ -92,6 +103,18 @@ namespace ctb_replay_editor {
                 Bass.BASS_ChannelPlay(Program.CurrentAudioStream, false);
                 IsPaused = false;
             }
+        }
+
+        private void stopPlayButton_Click(object sender, EventArgs e) {
+            Bass.BASS_ChannelStop(Program.CurrentAudioStream);
+        }
+
+        private void editModeCheckBox_CheckedChanged(object sender, EventArgs e) {
+            PlayField.IsEditMode = editModeCheckBox.Checked;
+        }
+
+        private void timeTrackBar_Scroll(object sender, EventArgs e) {
+            Utils.JumpToTime(Replay.ReplayFrames[timeTrackBar.Value].Time);
         }
     }
 }

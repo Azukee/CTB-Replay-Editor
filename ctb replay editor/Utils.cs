@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using osu.Shared;
 using osu_database_reader.Components.HitObjects;
 using ReplayAPI;
+using Un4seen.Bass;
 using Mods = ReplayAPI.Mods;
 
 namespace ctb_replay_editor {
@@ -13,6 +14,14 @@ namespace ctb_replay_editor {
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Classes\osu!\DefaultIcon");
             string path = key?.GetValue(null).ToString();
             return path?.Substring(1, path.Length - 13);
+        }
+
+        public static void JumpToTime(int ms) {
+            if (Program.CurrentAudioStream != 0) {
+                if (ms < 0)
+                    ms = 0;
+                Bass.BASS_ChannelSetPosition(Program.CurrentAudioStream, ms / (double)1000);
+            }
         }
 
         public static float ARtoMS(float ar) {
@@ -36,6 +45,7 @@ namespace ctb_replay_editor {
             return difficulty;
         }
 
+        //Azuki note: I need to implement this for slider ends and slider ticks later too, but at the moment sliders aren't working and will not be for some time
         public static void InitializeHyperDash(List<HitObject> HitObjects, float catcherWidth) {
             int lastDirection = 0;
             float catcherWidthHalf = catcherWidth / 2;
@@ -95,5 +105,10 @@ namespace ctb_replay_editor {
         //HoLLy note: no clue what this should be
         //Azuki note: no clue but osu! had it
         private static double AdjustCSToDifficulty(float cs, Mods m) => (ApplyModsToDifficulty(cs, 1.3, m) - 5) / 5;
+    }
+
+    public enum EditorState {
+        Watching = 0,
+        EditingFrame
     }
 }
